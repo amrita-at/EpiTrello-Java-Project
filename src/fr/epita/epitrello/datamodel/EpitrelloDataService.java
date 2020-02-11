@@ -13,7 +13,12 @@ public class EpitrelloDataService {
 		listMap = new HashMap<String, String>();
 		taskMap = new HashMap<String, Task>();
 	}
-
+	
+	/**
+	* Adding users to the card
+	* @param name
+	* @return
+	*/
 	public String addUser(String name) {
 		if (UserExists(name)) {
 			return "User Already Exists!";
@@ -21,7 +26,12 @@ public class EpitrelloDataService {
 		userMap.put(name, name);
 		return "Success";
 	}
-
+	
+	/**
+	* Adding list to the card
+	* @param name
+	* @return
+	*/
 	public String addList(String name) {
 		if (ListExists(name)) {
 			return "List Already Exists!";
@@ -29,7 +39,16 @@ public class EpitrelloDataService {
 		listMap.put(name, name);
 		return "Success";
 	}
-
+	
+	/**
+	* Adding new task elements into the card linking with the list name
+	* @param list
+	* @param task
+	* @param time
+	* @param priority
+	* @param description
+	* @return
+	*/
 	public String addTask(String list, String task, int time, int priority, String description) {
 
 		Task newtask = new Task(list, task, time, priority, description);
@@ -39,7 +58,15 @@ public class EpitrelloDataService {
 		taskMap.put(newtask.getTask_name(), newtask);
 		return "Success";
 	}
-
+	
+	/**
+	* Editing the existing task
+	* @param task
+	* @param time
+	* @param priority
+	* @param description
+	* @return
+	*/
 	public String editTask(String task, int time, int priority, String description) {
 
 		Task EditTask = new Task("listname", task, time, priority, description);
@@ -51,7 +78,13 @@ public class EpitrelloDataService {
 		}
 		return "Task does not exist!";
 	}
-
+	
+	/**
+	* Assigning the existing task to the valid users
+	* @param taskname
+	* @param username
+	* @return
+	*/
 	public String assignTask(String taskname, String username) {
 		Task UpdateTask = taskMap.get(taskname);
 		if (TaskExists(taskname)) {
@@ -61,10 +94,20 @@ public class EpitrelloDataService {
 		return "Error in assigning the task!";
 	}
 
+	/**
+	*Printing the task details of the specific task by calling the function getTaskDetails
+	* @param taskname
+	* @return the function
+	*/
 	public String printTask(String taskname) {
 		return getTaskDetails(taskname);
 	}
 
+	/**
+	*Setting the task status to complete
+	* @param taskname
+	* @return
+	*/
 	public String completeTask(String taskname) {
 		Task CompleteTask = taskMap.get(taskname);
 		if (TaskExists(taskname)) {
@@ -73,29 +116,43 @@ public class EpitrelloDataService {
 		}
 		return "Error!";
 	}
-
-	// Checking whether the task is not null and exists in the taskMap
+	
+	/**
+	*Checking whether the task is not null and exists in the taskMap
+	* @param task_name
+	* @return 
+	*/
 	public boolean TaskExists(String task_name) {
 		if (task_name != null && taskMap.containsKey(task_name))
 			return true;
 		return false;
 	}
 
-	// Checking whether the list is not null and exists in the listMap
+	/** Checking whether the list is not null and exists in the listMap
+	* @param list_name
+	* @return
+	*/
 	public boolean ListExists(String list_name) {
 		if (list_name != null && listMap.containsKey(list_name))
 			return true;
 		return false;
 	}
 
-	// Checking whether the user is not null and exists in the userMap
+	/** Checking whether the user is not null and exists in the userMap
+	* @param user_name
+	* @return
+	*/
 	public boolean UserExists(String user_name) {
 		if (user_name != null && userMap.containsKey(user_name))
 			return true;
 		return false;
 	}
 
-	// getting all the details of the task
+	/** 
+	*formatting all the details of the task
+	* @param taskname
+	* @return task details
+	*/
 	public String getTaskDetails(String taskname) {
 		String rsp = null;
 		Task taskDetails = taskMap.get(taskname);
@@ -108,7 +165,11 @@ public class EpitrelloDataService {
 			return "Task does not exist!";
 
 	}
-
+	
+	/**
+	* Printing users by sorting in accordance to their performance
+	* @return
+	*/
 	public String printUsersByPerformance() {
 		Map<String, Integer> userPerformance = new HashMap<>();
 		StringBuilder sb = new StringBuilder();
@@ -123,6 +184,10 @@ public class EpitrelloDataService {
 		return sb.toString();
 	}
 
+	/**
+	* Printing users by sorting in accordance to their workload by calculating the total estimated time
+	* @return
+	*/
 	public String printUsersByWorkload() {
 		Map<String, Integer> usertime = new HashMap<>();
 		StringBuilder sb = new StringBuilder();
@@ -136,7 +201,11 @@ public class EpitrelloDataService {
 		;
 		return sb.toString();
 	}
-
+	
+	/**
+	* Printing all the unassigned tasks by sorting their priority
+	* @return
+	*/
 	public String printUnassignedTasksByPriority() {
 		Map<Task, Integer> taskpriority = new HashMap<>();
 		StringBuilder sb = new StringBuilder();
@@ -151,6 +220,10 @@ public class EpitrelloDataService {
 		return sb.toString();
 	}
 
+	/**
+	* Removes the particular task from the card
+	* @return
+	*/
 	public String deleteTask(String taskname) {
 		if (TaskExists(taskname)) {
 			taskMap.remove(taskname);
@@ -158,7 +231,11 @@ public class EpitrelloDataService {
 		}
 		return "Error/Task does not exist!";
 	}
-
+	
+	/**
+	* Printing all the unfinished tasks by sorting the priority order
+	* @return
+	*/
 	public String printAllUnfinishedTasksByPriority() {
 		Map<Task, Integer> taskpriority = new HashMap<>();
 		StringBuilder sb = new StringBuilder();
@@ -172,7 +249,13 @@ public class EpitrelloDataService {
 		;
 		return sb.toString();
 	}
-
+	
+	/**
+	* Moving the task to another list
+	* @param taskname
+	* @param listname
+	* @return
+	*/
 	public String moveTask(String taskname, String listname) {
 		if (ListExists(listname) && TaskExists(taskname)) {
 			taskMap.get(taskname).setList_name(listname);
@@ -180,7 +263,12 @@ public class EpitrelloDataService {
 		}
 		return "Error- list/task does not exist!";
 	}
-
+	
+	/**
+	* Printing the particular list with its tasks
+	* @param listname
+	* @return
+	*/
 	public String printList(String listname) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("\nList " + listname+ "\n");
@@ -191,7 +279,11 @@ public class EpitrelloDataService {
 		});
 		return sb.toString();
 	}
-
+	
+	/**
+	* Printing all the lists with their tasks
+	* @return
+	*/
 	public String printAllLists() {
 		StringBuilder sb = new StringBuilder();
 		listMap.forEach((entry, val) -> {
@@ -200,7 +292,11 @@ public class EpitrelloDataService {
 		return sb.toString();
 	}
 
-	// Returns the total estimated time of each of an user
+	/** 
+	* Returns the total estimated time of the given user
+	* @param username
+	* @return
+	*/
 	public Integer TotalEstTime(String username) {
 		if (UserExists(username)) {
 			Integer totalEst = taskMap.entrySet().stream()
@@ -211,7 +307,11 @@ public class EpitrelloDataService {
 		return 0;
 	}
 
-	// Returns total time of completed task of an user
+	/** 
+	* Returns the total time of completed task of the given user
+	* @param username
+	* @return
+	*/
 	public Integer CompletedTime(String username) {
 		if (UserExists(username)) {
 			Integer completeTime = taskMap.entrySet().stream().filter((entry) -> {
@@ -223,7 +323,11 @@ public class EpitrelloDataService {
 		return 0;
 	}
 
-	// Returns remaining time for tasks of an user
+	/** 
+	* Returns the remaining time of the given user
+	* @param username
+	* @return
+	*/
 	public Integer RemainingTime(String username) {
 		if (UserExists(username)) {
 			return TotalEstTime(username) - CompletedTime(username);
@@ -231,6 +335,11 @@ public class EpitrelloDataService {
 		return 0;
 	}
 
+	/** 
+	* Printing all the tasks assigned to the user
+	* @param username
+	* @return
+	*/
 	public String printUserTasks(String username) {
 		if (UserExists(username)) {
 			StringBuilder sb = new StringBuilder();
